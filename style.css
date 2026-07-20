@@ -1,0 +1,188 @@
+* { box-sizing: border-box; }
+:root {
+  --bg: #0d0d0d;
+  --shell: #151515;
+  --screen: #060606;
+  --pad: #252525;
+  --text: #f2f2f2;
+  --muted: rgba(255,255,255,.58);
+  --key: #2f2f2f;
+  --key-hover: #393939;
+  --green: #39e600;
+  --green-dark: #2fc200;
+  --shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+
+body.light {
+  --bg: #f2f4f8;
+  --shell: #ffffff;
+  --screen: #111111;
+  --pad: #eceef2;
+  --text: #101114;
+  --muted: rgba(16,17,20,.55);
+  --key: #f7f7f7;
+  --key-hover: #eaeaea;
+  --green: #2fd21a;
+  --green-dark: #20b008;
+  --shadow: 0 24px 60px rgba(16,17,20,.14);
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(57,230,0,.08), transparent 35%), var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.phone-shell {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.screen {
+  width: min(674px, 100vw);
+  height: min(1536px, 100vh);
+  background: linear-gradient(180deg, var(--screen) 0%, var(--screen) 52%, var(--pad) 52%, var(--pad) 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 16px 0;
+}
+
+.spacer { flex: 1; }
+
+.nav-btn {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  opacity: .9;
+}
+
+.nav-btn:hover { background: rgba(255,255,255,.06); }
+
+.display-wrap {
+  padding: 56px 28px 10px;
+  min-height: 64%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.expression {
+  min-height: 28px;
+  font-size: 1.15rem;
+  color: var(--muted);
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.display {
+  margin-top: 8px;
+  font-size: clamp(3.2rem, 10vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.handle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.35);
+  opacity: .8;
+}
+
+.pad {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 26px 24px calc(28px + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, minmax(78px, 1fr));
+  gap: 18px;
+  background: var(--pad);
+}
+
+.key {
+  border: 0;
+  border-radius: 999px;
+  font-size: 1.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+  background: var(--key);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  transition: transform .12s ease, background .12s ease;
+  min-height: 78px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.key:hover, .key:active { background: var(--key-hover); transform: translateY(-1px); }
+
+.key.num { font-size: 1.9rem; }
+.key.func { color: var(--green); font-size: 1.65rem; }
+.key.op { color: var(--green); font-size: 2rem; }
+.key.back { font-size: 1.45rem; }
+.key.equal {
+  background: linear-gradient(180deg, var(--green) 0%, var(--green-dark) 100%);
+  color: #ffffff;
+  font-size: 2.25rem;
+  grid-column: 4;
+  grid-row: 4 / span 2;
+}
+.key.equal:hover, .key.equal:active {
+  background: linear-gradient(180deg, #50f31b 0%, #28b800 100%);
+}
+
+.zero { grid-column: 2; }
+
+.footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255,255,255,.52);
+  font-size: .82rem;
+  pointer-events: none;
+}
+
+body.light .footer { color: rgba(16,17,20,.45); }
+
+@media (max-width: 480px) {
+  .screen { width: 100vw; height: 100vh; }
+  .pad { gap: 12px; padding: 20px 16px calc(22px + env(safe-area-inset-bottom)); }
+  .key { min-height: 64px; }
+  .display-wrap { padding: 54px 18px 10px; min-height: 60%; }
+}
