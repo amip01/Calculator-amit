@@ -4,52 +4,193 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#121212" />
-  <meta name="description" content="Dark green calculator web app for GitHub Pages." />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="style.css" />
-  <title>Modern Calculator</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Calculator Amit</title>
+  <style>
+    :root{
+      --bg:#111;
+      --panel:#1c1c1c;
+      --panel2:#252525;
+      --key:#2d2d2d;
+      --keyHover:#373737;
+      --text:#f2f2f2;
+      --muted:#a9a9a9;
+      --green:#39e600;
+      --green2:#22c500;
+      --shadow:0 25px 70px rgba(0,0,0,.35);
+    }
+    body.light{
+      --bg:#eef1f5;
+      --panel:#ffffff;
+      --panel2:#f3f5f8;
+      --key:#f6f7f9;
+      --keyHover:#e8ebef;
+      --text:#101114;
+      --muted:#5c6470;
+      --shadow:0 25px 70px rgba(16,17,20,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .app{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+    }
+    .phone{
+      width:min(720px,100vw);
+      height:min(1600px,100vh);
+      background:linear-gradient(180deg,#111 0%,#111 54%,#232323 54%,#232323 100%);
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    body.light .phone{
+      background:linear-gradient(180deg,#ffffff 0%,#ffffff 54%,#eceff3 54%,#eceff3 100%);
+    }
+    .top{
+      padding:18px 18px 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .icon{
+      width:42px;height:42px;border:0;border-radius:999px;
+      background:transparent;color:var(--text);font-size:1.45rem;cursor:pointer;
+    }
+    .icon:hover{background:rgba(255,255,255,.06)}
+    body.light .icon:hover{background:rgba(16,17,20,.06)}
+    .display-area{
+      height:56%;
+      padding:56px 24px 12px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      align-items:flex-end;
+      text-align:right;
+    }
+    .expr{
+      width:100%;
+      min-height:28px;
+      color:var(--muted);
+      font-size:1.05rem;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .result{
+      width:100%;
+      margin-top:10px;
+      font-size:clamp(3.2rem,10vw,5.6rem);
+      line-height:1.05;
+      font-weight:300;
+      letter-spacing:-.04em;
+      overflow-wrap:anywhere;
+    }
+    .handle{
+      position:absolute;left:50%;top:50%;
+      transform:translateX(-50%);
+      width:56px;height:5px;border-radius:999px;
+      background:rgba(255,255,255,.35);
+    }
+    body.light .handle{background:rgba(16,17,20,.28)}
+    .pad{
+      position:absolute;
+      left:0;right:0;bottom:0;
+      padding:24px 18px calc(24px + env(safe-area-inset-bottom));
+      background:var(--panel2);
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      grid-template-rows:repeat(5,minmax(72px,1fr));
+      gap:14px;
+    }
+    .key{
+      border:0;
+      border-radius:999px;
+      background:var(--key);
+      color:var(--text);
+      font-size:1.8rem;
+      font-weight:500;
+      min-height:72px;
+      cursor:pointer;
+      user-select:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .key:hover,.key:active{background:var(--keyHover)}
+    .func{color:var(--green);font-size:1.6rem}
+    .op{color:var(--green);font-size:2rem}
+    .equal{
+      background:linear-gradient(180deg,var(--green) 0%,var(--green2) 100%);
+      color:white;
+      font-size:2.2rem;
+      grid-column:4;
+      grid-row:4 / span 2;
+    }
+    .zero{grid-column:2}
+    .footer{
+      position:absolute;left:0;right:0;bottom:8px;
+      padding:0 18px;
+      display:flex;justify-content:space-between;
+      color:rgba(255,255,255,.5);
+      font-size:.82rem;
+      pointer-events:none;
+    }
+    body.light .footer{color:rgba(16,17,20,.45)}
+    @media (max-width:480px){
+      .phone{width:100vw;height:100vh}
+      .pad{gap:12px;padding:20px 14px calc(20px + env(safe-area-inset-bottom))}
+      .key{min-height:64px}
+      .display-area{padding:52px 18px 12px}
+    }
+  </style>
 </head>
 <body>
-  <main class="phone-shell">
-    <section class="screen">
-      <header class="topbar" aria-label="Calculator header">
-        <button class="nav-btn" id="modeBtn" aria-label="Toggle theme">☾</button>
-        <div class="spacer"></div>
-        <button class="nav-btn" id="historyBtn" aria-label="History">ⓘ</button>
+  <main class="app">
+    <section class="phone" aria-label="Calculator">
+      <header class="top">
+        <button class="icon" id="themeBtn" aria-label="Toggle theme">☾</button>
+        <button class="icon" id="infoBtn" aria-label="Info">i</button>
       </header>
 
-      <section class="display-wrap" aria-live="polite">
-        <div id="expression" class="expression"></div>
-        <div id="display" class="display">0</div>
+      <section class="display-area" aria-live="polite">
+        <div id="expr" class="expr"></div>
+        <div id="result" class="result">0</div>
       </section>
 
       <div class="handle" aria-hidden="true"></div>
 
       <section class="pad" aria-label="Calculator keys">
-        <button class="key func" data-action="clear">C</button>
-        <button class="key func" data-action="divide">÷</button>
-        <button class="key func" data-action="multiply">×</button>
-        <button class="key func back" data-action="backspace">⌫</button>
+        <button class="key func" onclick="clearAll()">C</button>
+        <button class="key func" onclick="press('/')">÷</button>
+        <button class="key func" onclick="press('*')">×</button>
+        <button class="key func" onclick="backspace()">⌫</button>
 
-        <button class="key num" data-value="7">7</button>
-        <button class="key num" data-value="8">8</button>
-        <button class="key num" data-value="9">9</button>
-        <button class="key op" data-action="subtract">−</button>
+        <button class="key num" onclick="press('7')">7</button>
+        <button class="key num" onclick="press('8')">8</button>
+        <button class="key num" onclick="press('9')">9</button>
+        <button class="key op" onclick="press('-')">−</button>
 
-        <button class="key num" data-value="4">4</button>
-        <button class="key num" data-value="5">5</button>
-        <button class="key num" data-value="6">6</button>
-        <button class="key op" data-action="add">+</button>
+        <button class="key num" onclick="press('4')">4</button>
+        <button class="key num" onclick="press('5')">5</button>
+        <button class="key num" onclick="press('6')">6</button>
+        <button class="key op" onclick="press('+')">+</button>
 
-        <button class="key num" data-value="1">1</button>
-        <button class="key num" data-value="2">2</button>
-        <button class="key num" data-value="3">3</button>
-        <button class="key equal" data-action="equals" rowspan="2">=</button>
+        <button class="key num" onclick="press('1')">1</button>
+        <button class="key num" onclick="press('2')">2</button>
+        <button class="key num" onclick="press('3')">3</button>
+        <button class="key equal" onclick="calculate()">=</button>
 
-        <button class="key func" data-action="percent">%</button>
-        <button class="key num zero" data-value="0">0</button>
-        <button class="key num" data-value=".">.</button>
+        <button class="key func" onclick="press('%')">%</button>
+        <button class="key num zero" onclick="press('0')">0</button>
+        <button class="key num" onclick="press('.')">.</button>
       </section>
 
       <footer class="footer">
@@ -59,6 +200,112 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script>
+    (async function cleanupOldCache(){
+      try{
+        if('serviceWorker' in navigator){
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) { await reg.unregister(); }
+        }
+        if('caches' in window){
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+      }catch(e){}
+    })();
+
+    const exprEl = document.getElementById('expr');
+    const resultEl = document.getElementById('result');
+    const themeBtn = document.getElementById('themeBtn');
+    const infoBtn = document.getElementById('infoBtn');
+
+    let expr = '';
+    let lastResult = '';
+    let dark = true;
+
+    function update(){
+      resultEl.textContent = expr || lastResult || '0';
+      exprEl.textContent = expr ? expr : '';
+    }
+
+    function normalize(v){
+      return v.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/%/g,'/100');
+    }
+
+    function safeEval(v){
+      const s = normalize(v);
+      if(!s.trim()) return 0;
+      if(!/^[0-9+\-*/().\s]+$/.test(s)) throw new Error('bad');
+      return Function('"use strict"; return (' + s + ')')();
+    }
+
+    function format(n){
+      if (!Number.isFinite(n)) return 'Error';
+      const a = Math.abs(n);
+      if (a !== 0 && (a < 1e-8 || a > 1e12)) return n.toExponential(8).replace(/\.0+e/, 'e');
+      return String(Number(n.toFixed(10))).replace(/\.0+$/, '');
+    }
+
+    window.press = function(v){
+      if(resultEl.textContent === 'Error'){ expr=''; lastResult=''; }
+      const ops = ['+','-','*','/'];
+      if(!expr && ops.includes(v)) return;
+      const last = expr.slice(-1);
+      if(ops.includes(v) && ops.includes(last)) expr = expr.slice(0,-1) + v;
+      else expr += v;
+      update();
+    }
+
+    window.clearAll = function(){
+      expr=''; lastResult=''; update();
+    }
+
+    window.backspace = function(){
+      if(resultEl.textContent === 'Error'){ clearAll(); return; }
+      expr = expr.slice(0,-1);
+      update();
+    }
+
+    window.calculate = function(){
+      try{
+        const val = safeEval(expr);
+        lastResult = format(val);
+        expr = lastResult;
+        resultEl.textContent = lastResult;
+        exprEl.textContent = '';
+      }catch(e){
+        expr = '';
+        lastResult = '';
+        resultEl.textContent = 'Error';
+        exprEl.textContent = '';
+      }
+    }
+
+    themeBtn.addEventListener('click', () => {
+      dark = !dark;
+      document.body.classList.toggle('light', !dark);
+      themeBtn.textContent = dark ? '☾' : '☀';
+    });
+
+    infoBtn.addEventListener('click', () => {
+      alert('Calculator Amit\n\nKeys: digits, +, −, ×, ÷, %, backspace, clear, =');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const allowed = '0123456789+-*/().%';
+      if(allowed.includes(e.key)){
+        e.preventDefault();
+        press(e.key);
+      } else if(e.key === 'Enter' || e.key === '='){
+        e.preventDefault(); calculate();
+      } else if(e.key === 'Backspace'){
+        e.preventDefault(); backspace();
+      } else if(e.key === 'Escape'){
+        e.preventDefault(); clearAll();
+      }
+    });
+
+    update();
+  </script>
 </body>
 </html>
